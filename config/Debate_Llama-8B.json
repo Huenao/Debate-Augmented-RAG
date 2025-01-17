@@ -1,0 +1,17 @@
+{
+    "dataset": "StrategyQA",
+    "model": "Llama-3.1-8B",
+    "model_id": "/data/share/llama_checkpoints/Llama-3.1-8B-Instruct",
+    "output_dir": "./outputs",
+    "paradigm": "DRAG",
+    "agents": 2,
+    "rag_agents": 1,
+    "rounds": 5,
+    "question_cnts": 200,
+    "top_k_results": 3,
+    "doc_content_chars_max": 1000,
+    "rewrite_query": true,
+    "device": "cuda:0",
+    "max_new_tokens": 512,
+    "seed": 2025
+}
