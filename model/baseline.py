@@ -1,4 +1,5 @@
 from .agent import Agent, Agent_with_RAG
+from .retriever import MyWikiRetriever
 from abc import ABC, abstractmethod
 
 class SingleAgent:
@@ -159,7 +160,9 @@ class RAG:
         """
         self.llm = llm
         self.args = args
-        self.agent = Agent_with_RAG(llm_model=self.llm, agent_name=agent_name)
+        self.agent = Agent_with_RAG(llm_model=self.llm, agent_name=agent_name,
+                                    rag_model=MyWikiRetriever(top_k_results=self.args.top_k_results, 
+                                                            doc_content_chars_max=self.args.doc_content_chars_max))
     
     def reason(self, question):
         """
