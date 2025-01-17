@@ -60,6 +60,8 @@ def main(args):
         reason_process = CoT(llm_model, args)
     elif args.paradigm == "reflection":
         reason_process = Reflection(llm_model, args)
+    elif args.paradigm == "RAG":
+        reason_process = RAG(llm_model, args)
     else:
         raise ValueError("Invalid paradigm name.")
     

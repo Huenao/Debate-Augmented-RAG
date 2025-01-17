@@ -34,7 +34,7 @@ def parse_args():
     
     parser.add_argument("--paradigm", type=str, help="Paradigm of the method",
                         default=config.get("paradigm", "DRAG"),
-                        choices=["DRAG", "single_agent", "cot", "reflection"])
+                        choices=["DRAG", "single_agent", "cot", "reflection", "RAG"])
     parser.add_argument("--use_summary_agent", type=bool, help="Whether to use the summary agent",
                         default=config.get("use_summary_agent", True))
 

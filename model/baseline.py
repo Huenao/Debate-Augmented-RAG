@@ -43,23 +43,6 @@ The question is: {}
 Answer the question with (A) Yes or (B) No. Just select an option and explain your answer, put the answer in the form 'The answer is .', e.g.'The answer is (A) Yes.', at the beginning of your response.
             """.format(question)
 
-        elif self.args.dataset == "SimpleEthical":
-            question_message = """Can you answer the following question as accurately as possible?
-The question is: {}
-Explain your answer, put the answer in the form 'The answer is .', e.g.'The answer is (A).', at the beginning of your response.
-            """.format(question)
-        
-        elif self.args.dataset == "GSM8K":
-            question_message = """Can you solve the following math problem as accurately as possible?
-The question is: {}
-Your final answer should be a single numerical number, and put the answer in the form 'The answer is .', e.g.'The answer is 5.', at the end of your response.
-            """.format(question)
-
-        elif self.args.dataset == "ASQA":
-            question_message = """Can you answer the following question as accurately as possible?
-The question is: {}
-            """.format(question)
-
         return {"role": "user", "content": question_message}
     
     def clear_contexts(self):
@@ -104,26 +87,6 @@ The question is: {}
 Answer the question with (A) Yes or (B) No. Just select an option and explain your answer, put the answer in the form 'The answer is .', e.g.'The answer is (A) Yes.', at the beginning of your response.
 Let's think step by step.
             """.format(question)
-
-        elif self.args.dataset == "SimpleEthical":
-            question_message = """Can you answer the following question as accurately as possible?
-The question is: {}
-Explain your answer, put the answer in the form 'The answer is .', e.g.'The answer is (A).', at the beginning of your response.
-Let's think step by step.
-            """.format(question)
-        
-        elif self.args.dataset == "GSM8K":
-            question_message = """Can you solve the following math problem as accurately as possible?
-The question is: {}
-Your final answer should be a single numerical number, and put the answer in the form 'The answer is .', e.g.'The answer is 5.', at the end of your response.
-Let's think step by step.
-            """.format(question)
-
-        elif self.args.dataset == "ASQA":
-            question_message = """Can you answer the following question as accurately as possible?
-The question is: {}
-Let's think step by step.
-            """.format(question)
         
         return {"role": "user", "content": question_message}
     
@@ -166,23 +129,6 @@ Explain your answer, put the answer in the form 'The answer is .', e.g.'The answ
 The question is: {}
 Answer the question with (A) Yes or (B) No. Just select an option and explain your answer, put the answer in the form 'The answer is .', e.g.'The answer is (A) Yes.', at the beginning of your response.
             """.format(question)
-
-        elif self.args.dataset == "SimpleEthical":
-            question_message = """Can you answer the following question as accurately as possible?
-The question is: {}
-Explain your answer, put the answer in the form 'The answer is .', e.g.'The answer is (A).', at the beginning of your response.
-            """.format(question)
-        
-        elif self.args.dataset == "GSM8K":
-            question_message = """Can you solve the following math problem as accurately as possible?
-The question is: {}
-Your final answer should be a single numerical number, and put the answer in the form 'The answer is .', e.g.'The answer is 5.', at the end of your response.
-            """.format(question)
-        
-        elif self.args.dataset == "ASQA":
-            question_message = """Can you answer the following question as accurately as possible?
-The question is: {}
-            """.format(question)
         
         return {"role": "user", "content": question_message}
     
@@ -199,19 +145,59 @@ Explain your answer, put the answer in the form 'The answer is .', e.g.'The answ
             reflection_message = """Can you double check that your answer is correct.
 Answer the question with (A) Yes or (B) No. Just select an option and explain your answer, put the answer in the form 'The answer is .', e.g.'The answer is (A) Yes.', at the beginning of your response.
             """
-        
-        elif self.args.dataset == "SimpleEthical":
-            reflection_message = """Can you double check that your answer is correct.
-Explain your answer, put the answer in the form 'The answer is .', e.g.'The answer is (A).', at the beginning of your response.
-            """
-        
-        elif self.args.dataset == "GSM8K":
-            reflection_message = """Can you double check that your answer is correct.
-Your final answer should be a single numerical number, and put the answer in the form 'The answer is .', e.g.'The answer is 5.', at the end of your response.
-            """
-        
-        elif self.args.dataset == "ASQA":
-            reflection_message = """Can you double check that your answer is correct.
-            """
             
         return {"role": "user", "content": reflection_message}
+
+
+class RAG:
+    def __init__(self, llm, args, agent_name="RAG"):
+        """
+        Initialize the RAG class
+        :param llm: the language model
+        :param args: the arguments
+        :param agent_name: the agent name
+        """
+        self.llm = llm
+        self.args = args
+        self.agent = Agent_with_RAG(llm_model=self.llm, agent_name=agent_name)
+    
+    def reason(self, question):
+        """
+        Start the reasoning
+        :param question: the question to be reasoned
+        """
+        retrieved_rst = self.agent.rag_result(question, rewrite_query=self.args.rewrite_query)
+        message = self._construct_question_message_for_rag(question, retrieved_rst)
+
+        response = self.agent.response(message)
+        print("-"*10)
+        print("{} response:\n{}\n".format(self.agent.agent_name, response["content"]))
+
+        return {f"{self.agent.agent_name}": self.agent.agent_contexts}
+    
+    def _construct_question_message_for_rag(self, question, retrieved_rst):
+        """
+        Construct the question message for the single agent
+        :param question: the question
+        """
+        if "MMLU" in self.args.dataset:
+            question_message = """I will provide you with some information retrieved from Wikipedia. Based on this information, can you answer the following question as accurately as possible? If the retrieved information helps answer the question, please cite the evidence.
+The question is: {}
+This is the information that may be related to this question from Wikipedia: {}
+Explain your answer, put the answer in the form 'The answer is .', e.g.'The answer is (A).', at the beginning of your response.
+            """.format(question)
+
+        elif self.args.dataset == "StrategyQA":
+            question_message = """I will provide you with some information retrieved from Wikipedia. Based on this information, can you answer the following question as accurately as possible? If the retrieved information helps answer the question, please cite the evidence.
+The question is: {}
+This is the information that may be related to this question from Wikipedia: {}
+Answer the question with (A) Yes or (B) No. Just select an option and explain your answer, put the answer in the form 'The answer is .', e.g.'The answer is (A) Yes.', at the beginning of your response.
+            """.format(question, retrieved_rst)
+
+        return {"role": "user", "content": question_message}
+    
+    def clear_contexts(self):
+        """
+        Clear the contexts of the agent
+        """
+        self.agent.clear_contexts()
