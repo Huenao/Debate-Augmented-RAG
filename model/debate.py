@@ -73,23 +73,6 @@ Explain your answer, put the answer in the form 'The answer is .', e.g.'The answ
 The question is: {}
 Answer the question with (A) Yes or (B) No. Just select an option and explain your answer, put the answer in the form 'The answer is .', e.g.'The answer is (A) Yes.', at the beginning of your response.
             """.format(question)
-
-        elif self.args.dataset == "SimpleEthical":
-            question_message = """Can you answer the following question as accurately as possible?
-The question is: {}
-Explain your answer, put the answer in the form 'The answer is .', e.g.'The answer is (A).', at the beginning of your response.
-            """.format(question)
-
-        elif self.args.dataset == "GSM8K":
-            question_message = """Can you solve the following math problem as accurately as possible?
-The question is: {}
-Your final answer should be a single numerical number, and put the answer in the form 'The answer is .', e.g.'The answer is 5.', at the beginning of your response.
-            """.format(question)
-
-        elif self.args.dataset == "ASQA":
-            question_message = """Can you answer the following question as accurately as possible?
-The question is: {}
-            """.format(question)
         
         return {"role": "user", "content": question_message}
     
@@ -106,26 +89,6 @@ Explain your answer, put the answer in the form 'The answer is .', e.g.'The answ
 The question is: {}
 This is the information that may be related to this question from Wikipedia: {}
 Answer the question with (A) Yes or (B) No. Just select an option and explain your answer, put the answer in the form 'The answer is .', e.g.'The answer is (A) Yes.', at the beginning of your response.
-            """.format(question, retrieved_rst)
-
-        elif self.args.dataset == "SimpleEthical":
-            question_message = """I will provide you with some information retrieved from Wikipedia. Based on this information, can you answer the following question as accurately as possible? If the retrieved information helps answer the question, please cite the evidence.
-The question is: {}
-This is the information that may be related to this question from Wikipedia: {}
-Explain your answer, put the answer in the form 'The answer is .', e.g.'The answer is (A).', at the beginning of your response.
-            """.format(question, retrieved_rst)
-
-        elif self.args.dataset == "GSM8K":
-            question_message = """I will provide you with some information retrieved from Wikipedia. Based on this information, can you solve the following math problem as accurately as possible? If the retrieved information helps solve the problem, please cite the evidence.
-The question is: {}
-This is the information that may be related to this question from Wikipedia: {}
-Your final answer should be a single numerical number, and put the answer in the form 'The answer is .', e.g.'The answer is 5.', at the beginning of your response.
-            """.format(question, retrieved_rst)
-
-        elif self.args.dataset == "ASQA":
-            question_message = """I will provide you with some information retrieved from Wikipedia. Based on this information, can you answer the following question as accurately as possible? If the retrieved information helps answer the question, please cite the evidence.
-The question is: {}
-This is the information that may be related to this question from Wikipedia: {}
             """.format(question, retrieved_rst)
         
         return {"role": "user", "content": question_message}
@@ -150,26 +113,6 @@ These are the answers from other agents: {}
 Answer the question with (A) Yes or (B) No. Just select an option and explain your answer, put the answer in the form 'The answer is .', e.g.'The answer is (A) Yes.', at the beginning of your response.
             """.format(question, agents_response)
 
-        elif self.args.dataset == "SimpleEthical":
-            debate_message = """I will give the solution to this question from other agents. Use their solution as additional advice; note that they may be wrong. If you disagree with the other agents, please give your reasons and answer; otherwise, revise your previous answer.
-The question is: {}
-These are the answers from other agents: {}
-Explain your answer, put the answer in the form 'The answer is .', e.g.'The answer is (A).', at the beginning of your response.
-            """.format(question, agents_response)
-        
-        elif self.args.dataset == "GSM8K":
-            debate_message = """I will give the solution to this math problem from other agents. Use their solution as additional advice; note that they may be wrong. If you disagree with the other agents, please give your reasons and answer; otherwise, revise your previous answer.
-The question is: {}
-These are the answers from other agents: {}
-Your final answer should be a single numerical number, and put the answer in the form 'The answer is (answer).', e.g.'The answer is (5).', at the beginning of your response.
-            """.format(question, agents_response)
-
-        elif self.args.dataset == "ASQA":
-            debate_message = """I will give the solution to this question from other agents. Use their solution as additional advice; note that they may be wrong. If you disagree with the other agents, please give your reasons and answer; otherwise, revise your previous answer.
-The question is: {}
-These are the answers from other agents: {}
-            """.format(question, agents_response)
-
         return {"role": "user", "content": debate_message}
     
     def _construct_summary_message(self, question):
@@ -190,27 +133,6 @@ Put the agent's answer that you think is correct in the form 'The answer is .', 
 The question is: {}
 These are the answers from all agents: {}
 Put the agent's answer that you think is correct in the form 'The answer is .', e.g.'The answer is (A) Yes.', at the beginning of your response.
-            """.format(question, agents_responses)
-
-        elif self.args.dataset == "SimpleEthical":
-            summary_message_content = """You are a moderator. There will be two debaters involved in a debate competition. They will present their answers a question. You must evaluate both sides’ answers and decide which is correct.
-The question is: {}
-These are the answers from all agents: {}
-Put the agent's answer that you think is correct in the form 'The answer is .', e.g.'The answer is (A).', at the beginning of your response.
-            """.format(question, agents_responses)
-
-        elif self.args.dataset == "GSM8K":
-            summary_message_content = """You are a moderator. There will be two debaters involved in a debate competition. They will present their answers a question. You must evaluate both sides’ answers and decide which is correct.
-The question is: {}
-These are the answers from all agents: {}
-Your final answer should be a single numerical number, and put the agent's answer that you think is correct in the form 'The answer is .', e.g.'The answer is 5.', at the beginning of your response.
-            """.format(question, agents_responses)
-
-        elif self.args.dataset == "ASQA":
-            summary_message_content = """You are a moderator. There will be two debaters involved in a debate competition. They will present their answers a question. You must evaluate both sides’ answers and decide which is correct.
-The question is: {}
-These are the answers from all agents: {}
-Just select the agent's answer that you think is correct.
             """.format(question, agents_responses)
 
         return {"role": "user", "content": summary_message_content}

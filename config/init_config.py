@@ -24,7 +24,7 @@ def parse_args():
     # Define arguments with defaults from the config file
     parser.add_argument("--dataset", type=str, help="Name of the dataset",
                         default=config.get("dataset", "MMLU"),
-                        choices=["MMLU", "StrategyQA", "SimpleEthical", "GSM8K", "ASQA"])
+                        choices=["MMLU", "StrategyQA", "HotpotQA", ])
     parser.add_argument("--model", type=str, help="Name of the model",
                         default=config.get("model", "Llama-3.1-8B"))
     parser.add_argument("--model_id", type=str, help="Path to the pre-trained model",
