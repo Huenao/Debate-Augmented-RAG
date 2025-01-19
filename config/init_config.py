@@ -20,7 +20,7 @@ def init_cfg():
     
     # Environment Settings   
     parser.add_argument("--dataset_name", type=str, help="Name of the dataset",
-                        choices=["StrategyQA", "HotpotQA", "NaturalQuestions"])
+                        choices=["StrategyQA", "HotpotQA", "NQ", "2wiki"])
     parser.add_argument("--test_sample_num", type=int, help="Number of questions",
                         default=1000)
     parser.add_argument("--save_dir", type=str, help="Output directory to save the responses",
