@@ -2,8 +2,7 @@ data/
 dataset/
 outputs/
 output/
-transformers
-roberta
+wiki_corpus/
 
 *.sh
 *.ipynb
