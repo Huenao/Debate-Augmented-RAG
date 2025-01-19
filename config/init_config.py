@@ -9,7 +9,8 @@ def init_cfg():
     parser = argparse.ArgumentParser("Update configuration from command line arguments.")
 
     parser.add_argument("--method_name", type=str, help="Name of the method",
-                        default="naive_rag")
+                        default="Single Agent",
+                        choices=["Single Agent", "Standard RAG", "FLARE", "Iter-RetGen", "IRCoT"])
     parser.add_argument("--config_path", type=str, help="Path to the config.json file")
     
     # Global Paths
@@ -21,7 +22,7 @@ def init_cfg():
     parser.add_argument("--dataset_name", type=str, help="Name of the dataset",
                         choices=["StrategyQA", "HotpotQA", "NaturalQuestions"])
     parser.add_argument("--test_sample_num", type=int, help="Number of questions",
-                        default=100)
+                        default=1000)
     parser.add_argument("--save_dir", type=str, help="Output directory to save the responses",
                         default="output/")
 
@@ -56,7 +57,6 @@ def init_cfg():
     for key, value in vars(args).items():
         if key != "config_path" and value is not None:  # Skip config_path and only update provided arguments
             config[key] = value
-    print(config)
 
     config["save_note"] = args.method_name
     config["save_dir"] = os.path.join(config["save_dir"], config["generator_model"], config["save_note"])
