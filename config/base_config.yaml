@@ -43,7 +43,7 @@ save_note: 'experiment'
 retrieval_method: "e5"  # name or path of the retrieval model. 
 index_path: "./wiki_corpus/e5_flat_inner.index" # set automatically if not provided. 
 faiss_gpu: False # whether use gpu to hold index
-corpus_path: "/wiki_corpus/wiki18_100w.jsonl"  # path to corpus in '.jsonl' format that store the documents
+corpus_path: "./wiki_corpus/wiki18_100w.jsonl"  # path to corpus in '.jsonl' format that store the documents
 
 instruction: ~ # instruction for retrieval model
 retrieval_topk: 5 # number of retrieved documents
@@ -65,7 +65,7 @@ rerank_batch_size: 256 # batch size for reranker
 rerank_use_fp16: True
 
 # -------------------------------------------------Generator Settings------------------------------------------------#
-framework: vllm # inference frame work of LLM, supporting: 'hf','vllm','fschat'
+framework: hf # inference frame work of LLM, supporting: 'hf','vllm','fschat'
 generator_model: "llama3-8B-instruct" # name or path of the generator model
 generator_max_input_len: 2048  # max length of the input
 generator_batch_size: 2 # batch size for generation, invalid for vllm
