@@ -38,15 +38,6 @@ def parse_strategyqa_question(questions):
     return question, answer
 
 
-def prepare_simple_ethical_question(questions):
-    question_only = questions["input"]
-    options = list(questions["target_scores"].keys())
-    correct_index = next(i for i, value in enumerate(questions["target_scores"].values()) if value == 1)
-    answer = (chr(65 + correct_index), options[correct_index])
-    question = "{}: (A) {}, (B) {}, (C) {}, (D) {} \n".format(question_only, *options)
-    return question, answer
-
-
 def prepare_questions(args):
     if args.dataset == "MMLU":
         tasks = glob("./data/MMLU/test/*.csv")
@@ -73,25 +64,9 @@ def prepare_questions(args):
     elif args.dataset == "StrategyQA":
         with open("./data/StrategyQA/task.json", "r") as f:
             all_questions = json.load(f)["examples"]
-    elif args.dataset == "SimpleEthical":
-        with open("./data/Simple Ethical Questions/task.json", "r") as f:
-            all_questions = json.load(f)["examples"]
-    elif args.dataset == "GSM8K":
-        print("Reading GSM8K test set...")
-        all_questions = read_jsonl("./data/GSM8K/test.jsonl")
-    elif args.dataset == "ASQA":
-        print("Reading ASQA test set...")
-        with open("./data/ASQA/ASQA.json", "r") as f:
-            ASQA_dataset = json.load(f)
-        dev_set = ASQA_dataset["dev"]
-        train_set = ASQA_dataset["train"]
-        all_questions = []
-        for key in dev_set:
-            new_dict = {
-                "question": dev_set[key]["ambiguous_question"],
-                "qa_pairs": dev_set[key]["qa_pairs"]
-            }
-            all_questions.append(new_dict)
+    elif args.dataset == "HotpotQA":
+        with open("./data/HotpotQA/hotpot_dev_fullwiki_v1.json", "r") as f:
+            all_questions = json.load(f)
     else:
         raise ValueError("Invalid dataset name.")
     
@@ -113,11 +88,7 @@ def prepare_question_answer(args, q):
         return parse_df_question(df, idx)
     elif args.dataset == "StrategyQA":
         return parse_strategyqa_question(q)
-    elif args.dataset == "SimpleEthical":
-        return prepare_simple_ethical_question(q)
-    elif args.dataset == "GSM8K":
-        return q['question'], q['answer']
-    elif args.dataset == "ASQA":
-        return q["question"], q["qa_pairs"]
+    elif args.dataset == "HotpotQA":
+        return q["question"], q["answer"]
     
     raise ValueError("Invalid dataset name.")
