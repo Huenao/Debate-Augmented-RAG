@@ -75,3 +75,23 @@ def ircot(cfg, test_data):
     result = pipeline.run(test_data)
     
     return result
+
+
+def self_ask(cfg, test_data):
+    """
+    Reference:
+        Ofir Press et al. "Measuring and Narrowing the Compositionality Gap in Language Models"
+        in EMNLP Findings 2023.
+    """
+    from flashrag.pipeline import SelfAskPipeline
+
+    if cfg["dataset_name"] in ["StrategyQA", "HotpotQA","2wiki"]:
+        pipeline = SelfAskPipeline(cfg, max_iter=5, single_hop=True)
+        result = pipeline.run(test_data)
+    elif cfg["dataset_name"] in ["NQ", "PopQA", "TriviaQA"]:
+        pipeline = SelfAskPipeline(cfg, max_iter=5, single_hop=False)
+        result = pipeline.run(test_data)
+    else:
+        raise ValueError("Dataset not supported")
+    
+    return result

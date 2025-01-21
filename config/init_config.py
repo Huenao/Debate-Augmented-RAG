@@ -10,7 +10,7 @@ def init_cfg():
 
     parser.add_argument("--method_name", type=str, help="Name of the method",
                         default="Single Agent",
-                        choices=["Single Agent", "Standard RAG", "FLARE", "Iter-RetGen", "IRCoT"])
+                        choices=["Single Agent", "Standard RAG", "FLARE", "Iter-RetGen", "IRCoT", "Self-Ask"])
     parser.add_argument("--config_path", type=str, help="Path to the config.json file")
     
     # Global Paths
@@ -20,7 +20,7 @@ def init_cfg():
     
     # Environment Settings   
     parser.add_argument("--dataset_name", type=str, help="Name of the dataset",
-                        choices=["StrategyQA", "HotpotQA", "NQ", "2wiki"])
+                        choices=["StrategyQA", "HotpotQA", "NQ", "2wiki", "PopQA", "TriviaQA"])
     parser.add_argument("--test_sample_num", type=int, help="Number of questions",
                         default=1000)
     parser.add_argument("--save_dir", type=str, help="Output directory to save the responses",
