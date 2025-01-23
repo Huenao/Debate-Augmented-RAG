@@ -1,19 +1,13 @@
-from flashrag.config import Config
-from flashrag.utils import get_dataset
-import argparse
+from .prompt import *
+from .utils import *
 
 
 def single_agent(cfg, test_data):
     from flashrag.pipeline import SequentialPipeline
-    from flashrag.prompt import PromptTemplate
-
-    templete = PromptTemplate(
-        config=cfg,
-        system_prompt="Answer the question based on your own knowledge. Only give me the answer and do not output any other words.",
-        user_prompt="Question: {question}",
-    )
+    # preparation
+    templete = single_agent_prompt_template[cfg["dataset_name"]](cfg)
     pipeline = SequentialPipeline(cfg, templete)
-    result = pipeline.naive_run(test_data)
+    result = pipeline.naive_run(test_data, pred_process_fun=single_agent_pred_parse)
     
     return result
 
@@ -21,8 +15,9 @@ def single_agent(cfg, test_data):
 def standard_rag(cfg, test_data):
     from flashrag.pipeline import SequentialPipeline
     # preparation
-    pipeline = SequentialPipeline(cfg)
-    result = pipeline.run(test_data)
+    templete = standard_rag_prompt_template[cfg["dataset_name"]](cfg)
+    pipeline = SequentialPipeline(cfg, templete)
+    result = pipeline.run(test_data, pred_process_fun=standard_rag_pred_parse)
     
     return result
 
