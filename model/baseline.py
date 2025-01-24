@@ -27,8 +27,6 @@ def flare(cfg, test_data):
     Reference:
         Zhengbao Jiang et al. "Active Retrieval Augmented Generation"
         in EMNLP 2023.
-        Official repo: https://github.com/bbuing9/ICLR24_SuRe
-
     """
     from flashrag.pipeline import FLAREPipeline
 
@@ -51,9 +49,10 @@ def iterretgen(cfg, test_data):
     iter_num = 3
 
     from flashrag.pipeline import IterativePipeline
-
-    pipeline = IterativePipeline(cfg, iter_num=iter_num)
-    result = pipeline.run(test_data)
+    # preparation
+    templete = standard_rag_prompt_template[cfg["dataset_name"]](cfg)
+    pipeline = IterativePipeline(cfg, prompt_template=templete, iter_num=iter_num)
+    result = pipeline.run(test_data, pred_process_fun=standard_rag_pred_parse)
     
     return result
 
@@ -90,3 +89,17 @@ def self_ask(cfg, test_data):
         raise ValueError("Dataset not supported")
     
     return result
+
+
+def sure(cfg, test_data):
+    """
+    Reference:
+        Jaehyung Kim et al. "SuRe: Summarizing Retrievals using Answer Candidates for Open-domain QA of LLMs"
+        in ICLR 2024
+        Official repo: https://github.com/bbuing9/ICLR24_SuRe
+    """
+    from flashrag.pipeline import SuRePipeline
+
+    pipeline = SuRePipeline(cfg)
+    pred_process_fun = lambda x: x.split("\n")[0]
+    result = pipeline.run(test_data)

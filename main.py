@@ -10,7 +10,8 @@ func_map = {
     "FLARE": flare,
     "Iter-RetGen": iterretgen,
     "IRCoT": ircot,
-    "Self-Ask": self_ask
+    "Self-Ask": self_ask,
+    "SuRe": sure,
 }
 
 def main(cfg):
