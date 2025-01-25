@@ -103,3 +103,12 @@ def sure(cfg, test_data):
     pipeline = SuRePipeline(cfg)
     pred_process_fun = lambda x: x.split("\n")[0]
     result = pipeline.run(test_data)
+    
+
+def mad(cfg, test_data):
+    from .mad import MultiAgentDebate
+
+    pipeline = MultiAgentDebate(cfg, debate_rounds=3, agents_num=2)
+    result = pipeline.run(test_data)
+    
+    return result

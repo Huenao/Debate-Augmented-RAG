@@ -12,6 +12,7 @@ func_map = {
     "IRCoT": ircot,
     "Self-Ask": self_ask,
     "SuRe": sure,
+    "MAD": mad,
 }
 
 def main(cfg):
