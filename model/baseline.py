@@ -17,7 +17,7 @@ def standard_rag(cfg, test_data):
     # preparation
     templete = standard_rag_prompt_template[cfg["dataset_name"]](cfg)
     pipeline = SequentialPipeline(cfg, templete)
-    result = pipeline.run(test_data, pred_process_fun=standard_rag_pred_parse)
+    result = pipeline.run(test_data, pred_process_fun=single_agent_pred_parse)
     
     return result
 
@@ -52,7 +52,7 @@ def iterretgen(cfg, test_data):
     # preparation
     templete = standard_rag_prompt_template[cfg["dataset_name"]](cfg)
     pipeline = IterativePipeline(cfg, prompt_template=templete, iter_num=iter_num)
-    result = pipeline.run(test_data, pred_process_fun=standard_rag_pred_parse)
+    result = pipeline.run(test_data, pred_process_fun=single_agent_pred_parse)
     
     return result
 
