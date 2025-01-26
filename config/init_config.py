@@ -25,6 +25,12 @@ def init_cfg():
                         default=1000)
     parser.add_argument("--save_dir", type=str, help="Output directory to save the responses",
                         default="output/")
+    
+    # Generator Settings
+    parser.add_argument("--generator_max_input_len", type=int, help="Maximum input length for the generator",
+                        default=4096)
+    parser.add_argument("--generator_batch_size", type=int, help="Batch size for the generator",
+                        default=2)
 
     # Debate arguments
     parser.add_argument("--agents", type=int, help="Number of agents",
