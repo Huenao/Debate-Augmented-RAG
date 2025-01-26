@@ -59,7 +59,7 @@ use_reranker: False # whether to use reranker
 rerank_model_name: ~ # same as retrieval_method
 rerank_model_path: ~ # path to reranker model, path will be automatically find in `retriever_model2path`
 rerank_pooling_method: ~
-rerank_topk: 5  # number of remain documents after reranking
+rerank_topk: 3  # number of remain documents after reranking
 rerank_max_length: 512
 rerank_batch_size: 256 # batch size for reranker
 rerank_use_fp16: True
@@ -81,7 +81,7 @@ refiner_name: ~
 refiner_model_path: ~
 
 # Used for extractive method (e.g embedding models)
-refiner_topk: 5 # number of remain sentence after refiner
+refiner_topk: 3 # number of remain sentence after refiner
 refiner_pooling_method: 'mean' # pooling method of refiner model
 refiner_encode_max_length: 256
 # Used for abstractive method (e.g. generation models like bart-large-cnn)
@@ -105,5 +105,5 @@ sc_config:
 metrics: [ 'em','f1','acc','precision','recall']
 # Specify setting for metric, will be called within certain metrics
 metric_setting:
-  retrieval_recall_topk: 5
+  retrieval_recall_topk: 3
 save_metric_score: True #　whether to save the metric score into txt file
