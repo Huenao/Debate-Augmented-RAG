@@ -4,15 +4,22 @@ from .utils import *
 
 class MultiAgentDebate(BasicPipeline):
     
-    def __init__(self, config, prompt_template=None, debate_rounds=3, agents_num=2, generator=None):
+    def __init__(self, config, prompt_template=None, debate_rounds=3, agents_num=2, generator=None, retriever=None, use_rag=False, rag_agents_num=1):
         super().__init__(config, prompt_template)
         self.config = config
         self.debate_rounds = debate_rounds
-        self.agents_num = agents_num
+        self.agents_num = agents_num-rag_agents_num if use_rag else agents_num # If use rag, the number of agents is the number of agents in the debate minus the number of agents in the RAG
 
         self.generator = get_generator(config) if generator is None else generator
+        if use_rag:
+            self.retriever = get_retriever(config) if retriever is None else retriever
         
         self.agents_messages = dict()
+        # Initialize the agents' messages
+        if use_rag:
+            self.rag_agents_num = rag_agents_num
+            for i in range(rag_agents_num):
+                self.agents_messages[f'RAG_Agent_{i}'] = dict()
         for i in range(agents_num):
             self.agents_messages[f'Agent_{i}'] = dict()
 
@@ -22,13 +29,27 @@ class MultiAgentDebate(BasicPipeline):
             for i, agent_name in enumerate(self.agents_messages):
                 if round == 0:
                     # Construct the system message for the first round
-                    round_messages = [
-                                        [
-                                            self._construct_agents_system_message(),
-                                            {"role": "user", "content": f"Question: {q}"}
-                                        ] 
-                                        for q in dataset.question
-                                    ]
+                    if "RAG" in agent_name:
+                        input_query = dataset.question
+                        # Retrieve the documents
+                        retrieval_results = self.retriever.batch_search(input_query)
+                        dataset.update_output("retrieval_result", retrieval_results)
+                        round_messages = [
+                                            [
+                                                self._construct_rag_agents_system_message(self._format_reference(r)), # remember to format the reference
+                                                {"role": "user", "content": f"Question: {q}"}
+                                            ] 
+                                            for q, r in zip(dataset.question, dataset.retrieval_result)
+                                        ]
+                        print(round_messages)
+                    else:
+                        round_messages = [
+                                            [
+                                                self._construct_agents_system_message(),
+                                                {"role": "user", "content": f"Question: {q}"}
+                                            ] 
+                                            for q in dataset.question
+                                        ]
                     # Save the messages
                     self.agents_messages[agent_name] = round_messages
                     # Generate the input prompt
@@ -80,10 +101,19 @@ class MultiAgentDebate(BasicPipeline):
     def _construct_agents_system_message(self):
         if self.config["dataset_name"] == "StrategyQA":
             system_message = {"role": "system", 
-                              "content": "Answer the question based on your own knowledge. Given four answer candidates, Yes and No, choose the best answer choice. Always put the answer after 'The answer is: ', e.g.'The answer is: Yes.', at the end of your response. "}
+                              "content": "Answer the question based on your own knowledge. Given four answer candidates, Yes and No, choose the best answer choice. Always put the answer after 'The answer is: ', e.g.'The answer is: Yes.', at the end of your response."}
         else:
             system_message = {"role": "system", 
-                              "content": "Answer the question based on your own knowledge. Always put the answer after 'The answer is: ', e.g.'The answer is: answer.', at the end of your response. "}
+                              "content": "Answer the question based on your own knowledge. Always put the answer after 'The answer is: ', e.g.'The answer is: answer.', at the end of your response."}
+        return system_message
+    
+    def _construct_rag_agents_system_message(self, retrieval_results):
+        if self.config["dataset_name"] == "StrategyQA":
+            system_message = {"role": "system", 
+                              "content": f"Answer the question based on the given document. Given four answer candidates, Yes and No, choose the best answer choice. Always put the answer after 'The answer is: ', e.g.'The answer is: Yes.', at the end of your response. The following are given documents.\n{retrieval_results}"}
+        else:
+            system_message = {"role": "system", 
+                              "content": f"Answer the question based on the given document. Always put the answer after 'The answer is: ', e.g.'The answer is: answer.', at the end of your response. The following are given documents.\n{retrieval_results}"}
         return system_message
         
     def _construct_debate_user_message(self, other_agents, question, question_id, round):
@@ -99,9 +129,19 @@ class MultiAgentDebate(BasicPipeline):
     def _construct_moderator_system_message(self):
         if self.config["dataset_name"] == "StrategyQA":
             system_message = {"role": "system", 
-                            "content": "You are a moderator. There will be two debaters involved in a debate competition. They will present their answers a question. You must evaluate both sides’ answers and decide which is correct. Put the agent's answer that you think is correct after 'The answer is: ', e.g.'The answer is: Yes.', at the end of your response. "}
+                            "content": "You are a moderator. There will be two debaters involved in a debate competition. They will present their answers a question. You must evaluate both sides’ answers and decide which is correct. Put the agent's answer that you think is correct after 'The answer is: ', e.g.'The answer is: Yes.', at the end of your response."}
         else:
             system_message = {"role": "system", 
-                            "content": "You are a moderator. There will be two debaters involved in a debate competition. They will present their answers a question. You must evaluate both sides’ answers and decide which is correct. Put the agent's answer that you think is correct after 'The answer is: ', e.g.'The answer is: answer.', at the end of your response. "}
+                            "content": "You are a moderator. There will be two debaters involved in a debate competition. They will present their answers a question. You must evaluate both sides’ answers and decide which is correct. Put the agent's answer that you think is correct after 'The answer is: ', e.g.'The answer is: answer.', at the end of your response."}
         return system_message
+    
+    def _format_reference(self, retrieval_result):
+        format_reference = ""
+        for idx, doc_item in enumerate(retrieval_result):
+            content = doc_item["contents"]
+            title = content.split("\n")[0]
+            text = "\n".join(content.split("\n")[1:])
+            format_reference += f"Doc {idx+1}(Title: {title}) {text}\n"
+
+        return format_reference
         

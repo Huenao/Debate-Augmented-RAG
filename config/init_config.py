@@ -10,7 +10,7 @@ def init_cfg():
 
     parser.add_argument("--method_name", type=str, help="Name of the method",
                         default="Single Agent",
-                        choices=["Single Agent", "Standard RAG", "FLARE", "Iter-RetGen", "IRCoT", "Self-Ask", "SuRe", "MAD"])
+                        choices=["Single Agent", "Standard RAG", "FLARE", "Iter-RetGen", "IRCoT", "Self-Ask", "SuRe", "MAD", "MAD-RAG"])
     parser.add_argument("--config_path", type=str, help="Path to the config.json file")
     
     # Global Paths
@@ -38,7 +38,7 @@ def init_cfg():
     parser.add_argument("--rag_agents", type=int, help="Number of RAG agents",
                         default=1)
     parser.add_argument("--rounds", type=int, help="Number of rounds",
-                        default=5)
+                        default=3)
 
     parser.add_argument("--gpu_id", type=str, default="0")
     

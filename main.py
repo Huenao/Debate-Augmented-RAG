@@ -13,6 +13,7 @@ func_map = {
     "Self-Ask": self_ask,
     "SuRe": sure,
     "MAD": mad,
+    "MAD-RAG": mad_rag,
 }
 
 def main(cfg):
