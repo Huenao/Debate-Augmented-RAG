@@ -14,6 +14,8 @@ func_map = {
     "SuRe": sure,
     "MAD": mad,
     "MAD-RAG": mad_rag,
+    "Self-RAG": selfrag,
+    "Ret-Robust": retrobust
 }
 
 def main(cfg):

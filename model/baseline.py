@@ -120,3 +120,62 @@ def mad_rag(cfg, test_data):
     result = pipeline.run(test_data)
     
     return result
+
+
+def selfrag(cfg, test_data):
+    """
+    Reference:
+        Akari Asai et al. " SELF-RAG: Learning to Retrieve, Generate and Critique through self-reflection"
+        in ICLR 2024.
+        Official repo: https://github.com/AkariAsai/self-rag
+    """
+    from flashrag.pipeline import SelfRAGPipeline
+
+    pipeline = SelfRAGPipeline(
+        cfg,
+        threshold=0.2,
+        max_depth=2,
+        beam_width=2,
+        w_rel=1.0,
+        w_sup=1.0,
+        w_use=1.0,
+        use_grounding=True,
+        use_utility=True,
+        use_seqscore=True,
+        ignore_cont=True,
+        mode="adaptive_retrieval",
+    )
+    result = pipeline.run(test_data, long_form=False)
+
+    return result
+
+
+def retrobust(cfg, test_data):
+    """
+    Reference:
+        Ori Yoran et al. "Making Retrieval-Augmented Language Models Robust to Irrelevant Context"
+        in ICLR 2024.
+        Official repo: https://github.com/oriyor/ret-robust
+    """
+    model_dict = {
+        "nq": "/data/share/baseline_ckpt/Ret_Robust/llama-2-13b-peft-nq-retrobust",
+        "2wiki": "/data/share/baseline_ckpt/Ret_Robust/llama-2-13b-peft-2wikihop-retrobust",
+    }
+    if cfg["dataset_name"] in ["nq", "triviaqa", "popqa", "web_questions"]:
+        lora_path = model_dict["nq"]
+    elif cfg["dataset_name"] in ["hotpotqa", "2wikimultihopqa"]:
+        lora_path = model_dict["2wiki"]
+    else:
+        print("Not use lora")
+        lora_path = model_dict.get(cfg["dataset_name"], None)
+
+    cfg["generator_lora_path"] = lora_path
+
+    from flashrag.pipeline import SelfAskPipeline
+    from flashrag.utils import selfask_pred_parse
+
+    pipeline = SelfAskPipeline(cfg, max_iter=5, single_hop=False)
+    # use specify prediction parse function
+    result = pipeline.run(test_data, pred_process_fun=selfask_pred_parse)
+
+    return result
