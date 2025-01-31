@@ -15,8 +15,7 @@ def init_cfg():
     
     # Global Paths
     parser.add_argument("--model_path", type=str, help="Path to the pre-trained model")
-    parser.add_argument("--generator_model", type=str, help="Name of the generator model",
-                        default="llama3-8B-instruct")
+    parser.add_argument("--generator_model", type=str, help="Name of the generator model")
     
     # Environment Settings   
     parser.add_argument("--dataset_name", type=str, help="Name of the dataset",
