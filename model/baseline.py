@@ -161,9 +161,9 @@ def retrobust(cfg, test_data):
         "nq": "/data/share/baseline_ckpt/Ret_Robust/llama-2-13b-peft-nq-retrobust",
         "2wiki": "/data/share/baseline_ckpt/Ret_Robust/llama-2-13b-peft-2wikihop-retrobust",
     }
-    if cfg["dataset_name"] in ["nq", "triviaqa", "popqa", "web_questions"]:
+    if cfg["dataset_name"] in ["NQ", "TriviaQA", "PopQA", "StrategyQA"]:
         lora_path = model_dict["nq"]
-    elif cfg["dataset_name"] in ["hotpotqa", "2wikimultihopqa"]:
+    elif cfg["dataset_name"] in ["HotpotQA", "2wiki"]:
         lora_path = model_dict["2wiki"]
     else:
         print("Not use lora")
