@@ -41,7 +41,6 @@ class MultiAgentDebate(BasicPipeline):
                                             ] 
                                             for q, r in zip(dataset.question, dataset.retrieval_result)
                                         ]
-                        print(round_messages)
                     else:
                         round_messages = [
                                             [
