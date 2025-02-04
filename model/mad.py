@@ -4,7 +4,7 @@ from .utils import *
 
 class MultiAgentDebate(BasicPipeline):
     
-    def __init__(self, config, prompt_template=None, debate_rounds=3, agents_num=2, generator=None, retriever=None, use_rag=False, rag_agents_num=1):
+    def __init__(self, config, prompt_template=None, debate_rounds=3, agents_num=2, use_rag=False, rag_agents_num=1, generator=None, retriever=None):
         super().__init__(config, prompt_template)
         self.config = config
         self.debate_rounds = debate_rounds

@@ -103,23 +103,6 @@ def sure(cfg, test_data):
     pipeline = SuRePipeline(cfg)
     pred_process_fun = lambda x: x.split("\n")[0]
     result = pipeline.run(test_data)
-    
-
-def mad(cfg, test_data):
-    from .mad import MultiAgentDebate
-
-    pipeline = MultiAgentDebate(cfg, debate_rounds=3, agents_num=2)
-    result = pipeline.run(test_data)
-    
-    return result
-
-def mad_rag(cfg, test_data):
-    from .mad import MultiAgentDebate
-
-    pipeline = MultiAgentDebate(cfg, debate_rounds=3, agents_num=2, use_rag=True)
-    result = pipeline.run(test_data)
-    
-    return result
 
 
 def selfrag(cfg, test_data):
@@ -178,4 +161,22 @@ def retrobust(cfg, test_data):
     # use specify prediction parse function
     result = pipeline.run(test_data, pred_process_fun=selfask_pred_parse)
 
+    return result
+
+
+def mad(cfg, test_data):
+    from .mad import MultiAgentDebate
+
+    pipeline = MultiAgentDebate(cfg, debate_rounds=3, agents_num=2)
+    result = pipeline.run(test_data)
+    
+    return result
+
+
+def mad_rag(cfg, test_data):
+    from .mad import MultiAgentDebate
+
+    pipeline = MultiAgentDebate(cfg, debate_rounds=3, agents_num=2, use_rag=True)
+    result = pipeline.run(test_data)
+    
     return result
