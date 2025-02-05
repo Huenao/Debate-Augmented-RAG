@@ -65,7 +65,7 @@ def ircot(cfg, test_data):
     """
     from flashrag.pipeline import IRCOTPipeline
 
-    pipeline = IRCOTPipeline(cfg, max_iter=5)
+    pipeline = IRCOTPipeline(cfg, max_iter=3)
     result = pipeline.run(test_data)
     
     return result
