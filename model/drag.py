@@ -81,7 +81,7 @@ class DebateAugmentedRAG(BasicPipeline):
             if "Proponent" in moderator_output: # Proponent wins the debate round and the query stage ends
                 return query_pool
             else: # Opponent wins the debate round and the query stage continues
-                opponent_output = agents_messages[moderator_output.strip()][1]
+                opponent_output = agents_messages["Opponent Agent 0"][1]
                 # Update the query pool
                 query_pool_tmp = self.maintain_query_pool(query_pool, opponent_output)
                 if query_pool is None:
@@ -219,15 +219,22 @@ Deliver a brief, strong argument with clear reasoning, then you must choose only
     
     def maintain_query_pool(self, query_pool, opponent_output):
         try:
-            if "Query Optimization" in opponent_output:
-                optimization_instruction = opponent_output.split("Query Optimization:")[1].strip().split("->")
-                original_query = optimization_instruction[0].strip()
-                new_query = optimization_instruction[1].strip()
+            if "Query Optimization:" in opponent_output:
+                optimization_instruction = opponent_output.split("Query Optimization:")[1].strip()
+                if "->" in optimization_instruction:
+                    optimization_instruction = optimization_instruction.split("->")
+                    original_query = optimization_instruction[0].strip()
+                    new_query = optimization_instruction[1].strip()
+                else:
+                    original_query = optimization_instruction
+                    new_query = optimization_instruction
+
+                 # Remove the original query from the query pool
+                query_pool.pop(self.find_most_similar_key(query_pool, original_query))
+
                 retrieval_results = self.retriever.search(new_query)
                 query_pool[new_query] = retrieval_results
-                # Remove the original query from the query pool
-                query_pool.pop(self.find_most_similar_key(query_pool, original_query))
-            elif "Query Expansion" in opponent_output:
+            elif "Query Expansion:" in opponent_output:
                 new_query = opponent_output.split("Query Expansion:")[1].strip()
                 retrieval_results = self.retriever.search(new_query)
                 query_pool[new_query] = retrieval_results
@@ -250,12 +257,12 @@ Deliver a brief, strong argument with clear reasoning, then you must choose only
         
         return query_pool_str
     
-    def find_most_similar_key(query_dict, target_query):
+    def find_most_similar_key(self, query_dict, target_query):
         min_distance = float('inf')
         most_similar_key = None
 
         for key in query_dict.keys():
-            distance = Levenshtein.distance(key, target_query)  # 计算 Levenshtein 编辑距离
+            distance = Levenshtein.distance(key, target_query) # Calculate the Levenshtein distance
             if distance < min_distance:
                 min_distance = distance
                 most_similar_key = key
