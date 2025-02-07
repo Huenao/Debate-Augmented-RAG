@@ -33,7 +33,7 @@ test_sample_num: ~  # number of samples to test (only work in dev/test split), i
 random_sample: True # whether to randomly sample the test samples
 
 # Seed for reproducibility
-seed: 2025
+seed: 2024
 
 # Whether save intermediate data
 save_intermediate_data: True
