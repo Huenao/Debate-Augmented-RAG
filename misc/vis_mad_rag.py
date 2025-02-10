@@ -33,27 +33,27 @@ def main(args):
     
     for d in data:
         agent_names.append("RAG Agent 1")
-        Round0_InputPrompt.append(d['input'].get('RAG Agent 1_Round_0_input_prompt', ""))
+        Round0_InputPrompt.append(d['output'].get('RAG Agent 1_Round_0_input_prompt', ""))
         Round0_Output.append(d['output'].get('Agent 1_Round_0_output', ""))
-        Round1_InputPrompt.append(d['input'].get('RAG Agent 1_Round_1_input_prompt', ""))
+        Round1_InputPrompt.append(d['output'].get('RAG Agent 1_Round_1_input_prompt', ""))
         Round1_Output.append(d['output'].get('Agent 1_Round_1_output', ""))
-        Round2_InputPrompt.append(d['input'].get('RAG Agent 1_Round_2_input_prompt', ""))
+        Round2_InputPrompt.append(d['output'].get('RAG Agent 1_Round_2_input_prompt', ""))
         Round2_Output.append(d['output'].get('Agent 1_Round_2_output', ""))
         
         agent_names.append("Agent 1")
-        Round0_InputPrompt.append(d['input'].get('Agent 1_Round_0_input_prompt', ""))
+        Round0_InputPrompt.append(d['output'].get('Agent 1_Round_0_input_prompt', ""))
         Round0_Output.append(d['output'].get('Agent 1_Round_0_output', ""))
-        Round1_InputPrompt.append(d['input'].get('Agent 1_Round_1_input_prompt', ""))
+        Round1_InputPrompt.append(d['output'].get('Agent 1_Round_1_input_prompt', ""))
         Round1_Output.append(d['output'].get('Agent 1_Round_1_output', ""))
-        Round2_InputPrompt.append(d['input'].get('Agent 1_Round_2_input_prompt', ""))
+        Round2_InputPrompt.append(d['output'].get('Agent 1_Round_2_input_prompt', ""))
         Round2_Output.append(d['output'].get('Agent 1_Round_2_output', ""))
         
         agent_names.append("Moderator")
-        Round0_InputPrompt.append(d['input'].get('Moderator_Round_0_input_prompt', ""))
+        Round0_InputPrompt.append(d['output'].get('Moderator_Round_0_input_prompt', ""))
         Round0_Output.append(d['output'].get('Moderator_Round_0_output', ""))
-        Round1_InputPrompt.append(d['input'].get('Moderator_Round_1_input_prompt', ""))
+        Round1_InputPrompt.append(d['output'].get('Moderator_Round_1_input_prompt', ""))
         Round1_Output.append(d['output'].get('Moderator_Round_1_output', ""))
-        Round2_InputPrompt.append(d['input'].get('Moderator_Round_2_input_prompt', ""))
+        Round2_InputPrompt.append(d['output'].get('Moderator_Round_2_input_prompt', ""))
         Round2_Output.append(d['output'].get('Moderator_Round_2_output', ''))
 
     
