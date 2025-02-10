@@ -31,8 +31,10 @@ def main(args):
     QueryStage_Round1_Output = []
     QueryStage_Round2_InputPrompt = []
     QueryStage_Round2_Output = []
+    agent_names = []
     
     for d in data:
+        agent_names.append("Proponent Agent 0")
         QueryStage_Round0_InputPrompt.append(d['output'].get('QueryStage_Proponent Agent 0_Round0_InputPrompt', ""))
         QueryStage_Round0_Output.append(d['output'].get('QueryStage_Proponent Agent 0_Round0_Output', ""))
         QueryStage_Round1_InputPrompt.append(d['output'].get('QueryStage_Proponent Agent 0_Round1_InputPrompt', ""))
@@ -40,6 +42,7 @@ def main(args):
         QueryStage_Round2_InputPrompt.append(d['output'].get('QueryStage_Proponent Agent 0_Round2_InputPrompt', ""))
         QueryStage_Round2_Output.append(d['output'].get('QueryStage_Proponent Agent 0_Round2_Output', ""))
 
+        agent_names.append("Opponent Agent 0")
         QueryStage_Round0_InputPrompt.append(d['output'].get('QueryStage_Opponent Agent 0_Round0_InputPrompt', ""))
         QueryStage_Round0_Output.append(d['output'].get('QueryStage_Opponent Agent 0_Round0_Output', ""))
         QueryStage_Round1_InputPrompt.append(d['output'].get('QueryStage_Opponent Agent 0_Round1_InputPrompt', ""))
@@ -47,6 +50,7 @@ def main(args):
         QueryStage_Round2_InputPrompt.append(d['output'].get('QueryStage_Opponent Agent 0_Round2_InputPrompt', ""))
         QueryStage_Round2_Output.append(d['output'].get('QueryStage_Opponent Agent 0_Round2_Output', ""))
 
+        agent_names.append("Moderator")
         QueryStage_Round0_InputPrompt.append(d['output'].get('QueryStage_Moderator_Round0_InputPrompt', ""))
         QueryStage_Round0_Output.append(d['output'].get('QueryStage_Moderator_Round0_Output', ""))
         QueryStage_Round1_InputPrompt.append(d['output'].get('QueryStage_Moderator_Round1_InputPrompt', ""))
@@ -60,6 +64,7 @@ def main(args):
         Col("text", "Question", question_col),
         Col("text", "Answer", gold_answer_col),
         Col("text", "Metric Score", metric_score_col),
+        Col("text", "Agent", agent_names),
         Col("text", "Prediction", pred_col),
         Col("text", "Answer Stage Prompt", prompt_col),
         Col("text", "Raw Prediction", raw_pred_col),
