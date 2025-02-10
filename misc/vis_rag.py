@@ -22,7 +22,7 @@ def main(args):
         gold_answer_col.append(json.dumps(d['golden_answers'], indent=4, ensure_ascii=False, sort_keys=True))
         prompt_col.append(d['output']['prompt'])
         raw_pred_col.append(d['output']['raw_pred'])
-        pred_col.append(d['output']['raw_pred'])
+        pred_col.append(d['output']['pred'])
         metric_score_col.append(json.dumps(d['output']['metric_score'], indent=4, ensure_ascii=False, sort_keys=True))
     
     # Retrieval results
