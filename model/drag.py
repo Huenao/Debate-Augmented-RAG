@@ -169,7 +169,7 @@ Deliver a brief, strong argument with clear reasoning, then you must choose only
             if self.config["dataset_name"] == "StrategyQA":
                 system_message = {
                     "role": "system", 
-                    "content": f"Answer the question based on the given document. Given four answer candidates, Yes and No, choose the best answer choice. Always put the answer after 'The answer is: ', e.g.'The answer is: Yes.', at the end of your response. The following are given documents.\n{self.format_query_pool(query_pool)}"
+                    "content": f"Answer the question based on the given document. Given two answer candidates, Yes and No, choose the best answer choice. Always put the answer after 'The answer is: ', e.g.'The answer is: Yes.', at the end of your response. The following are given documents.\n{self.format_query_pool(query_pool)}"
                 }
             else:
                 system_message = {
@@ -180,7 +180,7 @@ Deliver a brief, strong argument with clear reasoning, then you must choose only
             if self.config["dataset_name"] == "StrategyQA":
                 system_message = {
                     "role": "system",
-                    "content": "Answer the question based on your own knowledge. Given four answer candidates, Yes and No, choose the best answer choice. Always put the answer after 'The answer is: ', e.g.'The answer is: Yes.', at the end of your response."
+                    "content": "Answer the question based on your own knowledge. Given two answer candidates, Yes and No, choose the best answer choice. Always put the answer after 'The answer is: ', e.g.'The answer is: Yes.', at the end of your response."
                 }
             else:
                 system_message = {
