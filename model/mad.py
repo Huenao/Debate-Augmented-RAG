@@ -18,11 +18,10 @@ class MultiAgentDebate(BasicPipeline):
         # Initialize the agents' messages
         if use_rag:
             self.rag_agents_num = rag_agents_num
-            for i in range(rag_agents_num):
+            for i in range(self.rag_agents_num):
                 self.agents_messages[f'RAG Agent {i+1}'] = dict()
-        for i in range(agents_num):
+        for i in range(self.agents_num):
             self.agents_messages[f'Agent {i+1}'] = dict()
-
 
     def run(self, dataset, do_eval=True, pred_process_fun=single_agent_pred_parse):
         for round in range(self.debate_rounds):
