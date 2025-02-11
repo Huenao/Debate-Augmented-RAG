@@ -130,10 +130,10 @@ class MultiAgentDebate(BasicPipeline):
     def _construct_moderator_system_message(self):
         if self.config["dataset_name"] == "StrategyQA":
             system_message = {"role": "system", 
-                            "content": "You are a moderator. There will be two debaters involved in a debate competition. They will present their answers a question. You must evaluate both sides’ answers and decide which is correct. The agents' answer always after 'The answer is: '. Also put the agent's answer that you think is correct after 'The answer is: ', e.g.'The answer is: Yes.', at the end of your response."}
+                            "content": "You are a moderator in a debate competition. Your task is to determine the correct final answer based on the arguments presented by debaters. Given two answer candidates, Yes and No, choose the best answer choice. Output only the final answer with no explanations or additional text."}
         else:
             system_message = {"role": "system", 
-                            "content": "You are a moderator. There will be two debaters involved in a debate competition. They will present their answers a question. You must evaluate both sides’ answers and decide which is correct. The agents' answer always after 'The answer is: '. Also put the agent's answer that you think is correct after 'The answer is: ', e.g.'The answer is: answer.', at the end of your response."}
+                            "content": "You are a moderator in a debate competition. Your task is to determine the correct final answer based on the arguments presented by debaters. Output only the final answer with no explanations or additional text."}
         return system_message
     
     def _format_reference(self, retrieval_result):
