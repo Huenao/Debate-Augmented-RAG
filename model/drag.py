@@ -9,10 +9,11 @@ from .utils import *
 
 
 class DebateAugmentedRAG(BasicPipeline):
-    def __init__(self, config, prompt_template=None, max_debate_rounds=3, agents_num=2, proponent_agent=1, opponent_agent=1, generator=None, retriever=None):
+    def __init__(self, config, prompt_template=None, max_query_debate_rounds=3, max_answer_debate_rounds=3, agents_num=2, proponent_agent=1, opponent_agent=1, generator=None, retriever=None):
         super().__init__(config, prompt_template)
         self.config = config
-        self.max_debate_rounds = max_debate_rounds
+        self.max_query_debate_rounds = max_query_debate_rounds
+        self.max_answer_debate_rounds = max_answer_debate_rounds
         
         if agents_num != proponent_agent + opponent_agent:
             raise ValueError("The number of agents must be equal to the sum of the proponent and opponent agents")
@@ -52,7 +53,13 @@ class DebateAugmentedRAG(BasicPipeline):
     def query_stage_debate(self, item):
         agents_messages = dict()
         query_pool = dict()
-        for round in range(self.max_debate_rounds):
+        if self.max_query_debate_rounds == 0:
+            input_query = item.question
+            retrieval_results = self.retriever.search(input_query)
+            query_pool[input_query.strip()] = retrieval_results
+            return query_pool
+        
+        for round in range(self.max_query_debate_rounds):
             if round == 0:
                 input_query = item.question
                 retrieval_results = self.retriever.search(input_query)
@@ -92,7 +99,7 @@ class DebateAugmentedRAG(BasicPipeline):
         return query_pool
             
     def answer_stage_debate(self, item, query_pool):
-        for round in range(self.max_debate_rounds):
+        for round in range(self.max_answer_debate_rounds):
             for agent_name in self.agents_messages_answer_stage:
                 if round == 0:
                     init_message = [
