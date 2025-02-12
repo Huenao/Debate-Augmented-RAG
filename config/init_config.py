@@ -36,7 +36,9 @@ def init_cfg():
                         default=2)
     parser.add_argument("--rag_agents", type=int, help="Number of RAG agents",
                         default=1)
-    parser.add_argument("--rounds", type=int, help="Number of rounds",
+    parser.add_argument("--max_query_debate_rounds", type=int, help="Number of rounds",
+                        default=3)
+    parser.add_argument("--max_answer_debate_rounds", type=int, help="Number of rounds",
                         default=3)
 
     parser.add_argument("--gpu_id", type=str, default="0")

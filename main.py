@@ -6,19 +6,19 @@ from flashrag.utils import get_dataset
 
 
 def drag(cfg, test_data):
-    pipeline = DebateAugmentedRAG(cfg, max_query_debate_rounds=3, max_answer_debate_rounds=3)
+    pipeline = DebateAugmentedRAG(cfg, max_query_debate_rounds=cfg["max_query_debate_rounds"], max_answer_debate_rounds=cfg["max_answer_debate_rounds"])
     result = pipeline.run(test_data)
     
     return result
 
 def drag_(cfg, test_data):
-    pipeline = DebateAugmentedRAG(cfg, max_query_debate_rounds=3, max_answer_debate_rounds=3)
+    pipeline = DebateAugmentedRAG(cfg, max_query_debate_rounds=cfg["max_query_debate_rounds"], max_answer_debate_rounds=cfg["max_answer_debate_rounds"])
     result = pipeline.run(test_data, answer_stage=False)
     
     return result
 
 def drag_2(cfg, test_data):
-    pipeline = DebateAugmentedRAG(cfg, max_query_debate_rounds=0, max_answer_debate_rounds=3)
+    pipeline = DebateAugmentedRAG(cfg, max_query_debate_rounds=0, max_answer_debate_rounds=cfg["max_answer_debate_rounds"])
     result = pipeline.run(test_data)
     
     return result
