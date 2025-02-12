@@ -6,14 +6,20 @@ from flashrag.utils import get_dataset
 
 
 def drag(cfg, test_data):
-    pipeline = DebateAugmentedRAG(cfg, max_debate_rounds=3)
+    pipeline = DebateAugmentedRAG(cfg, max_query_debate_rounds=3, max_answer_debate_rounds=3)
     result = pipeline.run(test_data)
     
     return result
 
 def drag_(cfg, test_data):
-    pipeline = DebateAugmentedRAG(cfg, max_debate_rounds=3)
+    pipeline = DebateAugmentedRAG(cfg, max_query_debate_rounds=3, max_answer_debate_rounds=3)
     result = pipeline.run(test_data, answer_stage=False)
+    
+    return result
+
+def drag_2(cfg, test_data):
+    pipeline = DebateAugmentedRAG(cfg, max_query_debate_rounds=0, max_answer_debate_rounds=3)
+    result = pipeline.run(test_data)
     
     return result
 
@@ -36,7 +42,8 @@ def main(cfg):
         "Self-RAG": selfrag,
         "Ret-Robust": retrobust,
         "DRAG": drag,
-        "DRAG-": drag_
+        "DRAG-": drag_,
+        "DRAG-2": drag_2
     }
     
     func = func_map[cfg["method_name"]]
