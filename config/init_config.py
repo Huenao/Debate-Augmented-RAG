@@ -10,7 +10,7 @@ def init_cfg():
 
     parser.add_argument("--method_name", type=str, help="Name of the method",
                         default="Single Agent",
-                        choices=["DRAG", "DRAG-", "Single Agent", "Standard RAG", "FLARE", "Iter-RetGen", "IRCoT", "Self-Ask", "SuRe", "MAD", "MAD-RAG", "Self-RAG", "Ret-Robust"])
+                        choices=["DRAG", "DRAG-", "Single Agent", "Standard RAG", "FLARE", "Iter-RetGen", "IRCoT", "Self-Ask", "SuRe", "MAD", "MAD-RAG", "MAD-RAG2", "Self-RAG", "Ret-Robust"])
     parser.add_argument("--config_path", type=str, help="Path to the config.json file")
     
     # Global Paths

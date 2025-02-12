@@ -23,7 +23,7 @@ class MultiAgentDebate(BasicPipeline):
         for i in range(self.agents_num):
             self.agents_messages[f'Agent {i+1}'] = dict()
 
-    def run(self, dataset, do_eval=True, pred_process_fun=single_agent_pred_parse):
+    def run(self, dataset, do_eval=True):
         for round in range(self.debate_rounds):
             for i, agent_name in enumerate(self.agents_messages):
                 if round == 0:
@@ -93,32 +93,32 @@ class MultiAgentDebate(BasicPipeline):
 
             dataset.update_output("pred", moderator_output)
             
-        dataset = self.evaluate(dataset, do_eval=do_eval, pred_process_fun=pred_process_fun)
+        dataset = self.evaluate(dataset, do_eval=do_eval)
     
     
     def _construct_agents_system_message(self):
         if self.config["dataset_name"] == "StrategyQA":
             system_message = {"role": "system", 
-                              "content": "Answer the question based on your own knowledge. Given two answer candidates, Yes and No, choose the best answer choice. Always put the answer after 'The answer is: ', e.g.'The answer is: Yes.', at the end of your response."}
+                              "content": "Answer the question based on your own knowledge. Given two answer candidates, Yes and No, choose the best answer choice. Explain your answer, and always put the answer after 'The answer is: ', e.g.'The answer is: Yes.', at the end of your response."}
         else:
             system_message = {"role": "system", 
-                              "content": "Answer the question based on your own knowledge. Always put the answer after 'The answer is: ', e.g.'The answer is: answer.', at the end of your response."}
+                              "content": "Answer the question based on your own knowledge. Explain your answer, and always put the answer after 'The answer is: ', e.g.'The answer is: answer.', at the end of your response."}
         return system_message
     
     def _construct_rag_agents_system_message(self, retrieval_results):
         if self.config["dataset_name"] == "StrategyQA":
             system_message = {"role": "system", 
-                              "content": f"Answer the question based on the given document. Given two answer candidates, Yes and No, choose the best answer choice. Always put the answer after 'The answer is: ', e.g.'The answer is: Yes.', at the end of your response. The following are given documents.\n{retrieval_results}"}
+                              "content": f"Answer the question based on the given document. Given two answer candidates, Yes and No, choose the best answer choice. Explain your answer, and always put the answer after 'The answer is: ', e.g.'The answer is: Yes.', at the end of your response. The following are given documents.\n{retrieval_results}"}
         else:
             system_message = {"role": "system", 
-                              "content": f"Answer the question based on the given document. Always put the answer after 'The answer is: ', e.g.'The answer is: answer.', at the end of your response. The following are given documents.\n{retrieval_results}"}
+                              "content": f"Answer the question based on the given document. Explain your answer, and always put the answer after 'The answer is: ', e.g.'The answer is: answer.', at the end of your response. The following are given documents.\n{retrieval_results}"}
         return system_message
         
     def _construct_debate_user_message(self, other_agents, question, question_id, round):
         if self.config["dataset_name"] == "StrategyQA":
-            debate_messages = "I will give the solution to this question from other agents. Use their solution as additional advice; note that they may be wrong. If you disagree with the other agents, please give your reasons and answer; otherwise, revise your previous answer. Given two answer candidates, Yes and No, choose the best answer choice. Always put the answer after 'The answer is: ', e.g.'The answer is: Yes.', at the end of your response."
+            debate_messages = "I will give the answers and arguments to this question from other agents. Use their solution as additional advice; note that they may be wrong. Given two answer candidates, Yes and No, choose the best answer choice. Explain your answer, and always put the answer after 'The answer is: ', e.g.'The answer is: Yes.', at the end of your response."
         else:
-            debate_messages = "I will give the solution to this question from other agents. Use their solution as additional advice; note that they may be wrong. If you disagree with the other agents, please give your reasons and answer; otherwise, revise your previous answer. Always put the answer after 'The answer is: ', e.g.'The answer is: answer.', at the end of your response."
+            debate_messages = "I will give the answers and arguments to this question from other agents. Use their solution as additional advice; note that they may be wrong. Explain your answer, and always put the answer after 'The answer is: ', e.g.'The answer is: answer.', at the end of your response."
         debate_messages += f"Question: {question}\n"  
         debate_messages += "Other agents responses:\n"
         for i, agent_name in enumerate(other_agents):

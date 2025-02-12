@@ -32,6 +32,7 @@ def main(cfg):
         "SuRe": sure,
         "MAD": mad,
         "MAD-RAG": mad_rag,
+        "MAD-RAG2": mad_rag2,
         "Self-RAG": selfrag,
         "Ret-Robust": retrobust,
         "DRAG": drag,

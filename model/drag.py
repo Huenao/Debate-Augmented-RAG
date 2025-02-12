@@ -30,7 +30,7 @@ class DebateAugmentedRAG(BasicPipeline):
             self.agents_messages_query_stage[f'Opponent Agent {i}'] = []
             self.agents_messages_answer_stage[f'Opponent Agent {i}'] = []
 
-    def run(self, dataset, do_eval=True, pred_process_fun=single_agent_pred_parse, answer_stage=True):
+    def run(self, dataset, do_eval=True, answer_stage=True):
         for item in tqdm(dataset, desc="Inference: "):
             query_pool = self.query_stage_debate(item)
             item.update_output("QueryStage_QueryPool", query_pool)
@@ -39,7 +39,7 @@ class DebateAugmentedRAG(BasicPipeline):
                 self.answer_stage_debate(item, query_pool)
             else:
                 message = [
-                    self._answer_stage_system_message("Proponent", query_pool),
+                    self._answer_only_message(query_pool),
                     {"role": "user", "content": f"Question: {item.question}\n"}
                 ]
                 input_prompt = self.prompt_template.get_string(messages=message)
@@ -47,7 +47,7 @@ class DebateAugmentedRAG(BasicPipeline):
                 item.update_output("answer_input_prompt", input_prompt)
                 item.update_output("pred", output)
         
-        dataset = self.evaluate(dataset, do_eval=do_eval, pred_process_fun=pred_process_fun)
+        dataset = self.evaluate(dataset, do_eval=do_eval)
     
     def query_stage_debate(self, item):
         agents_messages = dict()
@@ -123,7 +123,7 @@ class DebateAugmentedRAG(BasicPipeline):
             
             moderator_message = [
                 self._answer_stage_moderator_message(),
-                {"role": "user", "content": f"Question: {item.question}\n{agents_responses}"}
+                {"role": "user", "content": f"Question: {item.question}\n{self.format_query_pool(query_pool)}\n{agents_responses}"}
             ]
             moderator_input_prompt = self.prompt_template.get_string(messages=moderator_message)
             moderator_output = self.generator.generate(moderator_input_prompt)[0]
@@ -169,28 +169,40 @@ Deliver a brief, strong argument with clear reasoning, then you must choose only
             if self.config["dataset_name"] == "StrategyQA":
                 system_message = {
                     "role": "system", 
-                    "content": f"Answer the question based on the given document. Given two answer candidates, Yes and No, choose the best answer choice. Always put the answer after 'The answer is: ', e.g.'The answer is: Yes.', at the end of your response. The following are given documents.\n{self.format_query_pool(query_pool)}"
+                    "content": f"Answer the question based on the given document. Given two answer candidates, Yes and No, choose the best answer choice. Explain your answer, and always put the answer after 'The answer is: ', e.g.'The answer is: Yes.', at the end of your response. The following are given documents.\n{self.format_query_pool(query_pool)}"
                 }
             else:
                 system_message = {
                     "role": "system", 
-                    "content": f"Answer the question based on the given document. Always put the answer after 'The answer is: ', e.g.'The answer is: answer.', at the end of your response. The following are given documents.\n{self.format_query_pool(query_pool)}"
+                    "content": f"Answer the question based on the given document. Explain your answer, and always put the answer after 'The answer is: ', e.g.'The answer is: answer.', at the end of your response. The following are given documents.\n{self.format_query_pool(query_pool)}"
                 }
         elif "Opponent" in agent_name:
             if self.config["dataset_name"] == "StrategyQA":
                 system_message = {
                     "role": "system",
-                    "content": "Answer the question based on your own knowledge. Given two answer candidates, Yes and No, choose the best answer choice. Always put the answer after 'The answer is: ', e.g.'The answer is: Yes.', at the end of your response."
+                    "content": "Answer the question based on your own knowledge. Given two answer candidates, Yes and No, choose the best answer choice. Explain your answer, and always put the answer after 'The answer is: ', e.g.'The answer is: Yes.', at the end of your response."
                 }
             else:
                 system_message = {
                     "role": "system",
-                    "content": "Answer the question based on your own knowledge. Always put the answer after 'The answer is: ', e.g.'The answer is: answer.', at the end of your response."
+                    "content": "Answer the question based on your own knowledge. Explain your answer, and always put the answer after 'The answer is: ', e.g.'The answer is: answer.', at the end of your response."
                 }
         return system_message
     
+    def _answer_only_message(self, query_pool):
+        if self.config["dataset_name"] == "StrategyQA":
+            system_message = {"role": "system", 
+                            "content": f"Answer the question based on the given document. Given two answer candidates, Yes and No, choose the best answer choice. Output only the final answer with no explanations or additional text.\n{self.format_query_pool(query_pool)}"}
+        else:
+            system_message = {"role": "system", 
+                            "content": f"Answer the question based on the given document. Output only the final answer with no explanations or additional text.\n{self.format_query_pool(query_pool)}"}
+        return system_message  
+    
     def _answer_stage_debate_message(self, other_agents, question, round):
-        debate_messages = "I will give the solution to this question from other agents. Use their solution as additional advice; note that they may be wrong. If you disagree with the other agents, please give your reasons and answer; otherwise, revise your previous answer."
+        if self.config["dataset_name"] == "StrategyQA":
+            debate_messages = "I will give the answers and arguments to this question from other agents. Use their solution as additional advice; note that they may be wrong. Given two answer candidates, Yes and No, choose the best answer choice. Explain your answer, and always put the answer after 'The answer is: ', e.g.'The answer is: Yes.', at the end of your response."
+        else:
+            debate_messages = "I will give the answers and arguments to this question from other agents. Use their solution as additional advice; note that they may be wrong. Explain your answer, and always put the answer after 'The answer is: ', e.g.'The answer is: answer.', at the end of your response."
         debate_messages += f"Question: {question}\n"  
         debate_messages += "Other agents responses:\n"
         for i, agent_name in enumerate(other_agents):
@@ -201,11 +213,11 @@ Deliver a brief, strong argument with clear reasoning, then you must choose only
     def _answer_stage_moderator_message(self):
         if self.config["dataset_name"] == "StrategyQA":
             system_message = {"role": "system", 
-                            "content": "You are a moderator. There will be two debaters involved in a debate competition. They will present their answers a question. You must evaluate both sides’ answers and decide which is correct. Put the agent's answer that you think is correct after 'The answer is: ', e.g.'The answer is: Yes.', at the end of your response."}
+                            "content": "You are a moderator in a debate competition. Your task is to determine the correct final answer based on the arguments presented by debaters. Given two answer candidates, Yes and No, choose the best answer choice. Output only the final answer with no explanations or additional text."}
         else:
             system_message = {"role": "system", 
-                            "content": "You are a moderator. There will be two debaters involved in a debate competition. They will present their answers a question. You must evaluate both sides’ answers and decide which is correct. Put the agent's answer that you think is correct after 'The answer is: ', e.g.'The answer is: answer.', at the end of your response."}
-        return system_message
+                            "content": "You are a moderator in a debate competition. Your task is to determine the correct final answer based on the arguments presented by debaters. Output only the final answer with no explanations or additional text."}
+        return system_message        
     
     def _format_reference(self, retrieval_result):
         format_reference = ""

@@ -180,3 +180,11 @@ def mad_rag(cfg, test_data):
     result = pipeline.run(test_data)
     
     return result
+
+def mad_rag2(cfg, test_data):
+    from .mad import MultiAgentDebate
+
+    pipeline = MultiAgentDebate(cfg, debate_rounds=3, agents_num=2, use_rag=True, rag_agents_num=2)
+    result = pipeline.run(test_data)
+    
+    return result
