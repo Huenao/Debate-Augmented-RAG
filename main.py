@@ -23,6 +23,11 @@ def drag_2(cfg, test_data):
     
     return result
 
+def drag_wo_asys(cfg, test_data):
+    pipeline = DebateAugmentedRAG(cfg, max_query_debate_rounds=cfg["max_query_debate_rounds"], max_answer_debate_rounds=cfg["max_answer_debate_rounds"], answer_proponet_agent=2, answer_oppoent_agent=0)
+    result = pipeline.run(test_data)
+    
+    return result
 
 def main(cfg):
     all_splits = get_dataset(cfg)
@@ -42,6 +47,7 @@ def main(cfg):
         "Self-RAG": selfrag,
         "Ret-Robust": retrobust,
         "DRAG": drag,
+        "DRAG_wo_asys": drag_wo_asys,
         "DRAG-": drag_,
         "DRAG-2": drag_2
     }

@@ -9,13 +9,13 @@ from .utils import *
 
 
 class DebateAugmentedRAG(BasicPipeline):
-    def __init__(self, config, prompt_template=None, max_query_debate_rounds=3, max_answer_debate_rounds=3, agents_num=2, proponent_agent=1, opponent_agent=1, generator=None, retriever=None):
+    def __init__(self, config, prompt_template=None, max_query_debate_rounds=3, max_answer_debate_rounds=3, agents_num=2, query_proponent_agent=1, query_opponent_agent=1, answer_proponet_agent=1, answer_oppoent_agent=1, generator=None, retriever=None):
         super().__init__(config, prompt_template)
         self.config = config
         self.max_query_debate_rounds = max_query_debate_rounds
         self.max_answer_debate_rounds = max_answer_debate_rounds
         
-        if agents_num != proponent_agent + opponent_agent:
+        if agents_num != query_proponent_agent + query_opponent_agent & agents_num != answer_proponet_agent + answer_oppoent_agent:
             raise ValueError("The number of agents must be equal to the sum of the proponent and opponent agents")
 
         self.generator = get_generator(config) if generator is None else generator
@@ -24,11 +24,14 @@ class DebateAugmentedRAG(BasicPipeline):
         self.agents_messages_answer_stage = dict()
         self.agents_messages_query_stage = dict()
         # Initialize the agents' messages
-        for i in range(proponent_agent):
+        for i in range(query_proponent_agent):
             self.agents_messages_query_stage[f'Proponent Agent {i}'] = []
-            self.agents_messages_answer_stage[f'Proponent Agent {i}'] = []
-        for i in range(opponent_agent):
+        for i in range(query_opponent_agent):
             self.agents_messages_query_stage[f'Opponent Agent {i}'] = []
+            
+        for i in range(answer_proponet_agent):
+            self.agents_messages_answer_stage[f'Proponent Agent {i}'] = []
+        for i in range(answer_oppoent_agent):
             self.agents_messages_answer_stage[f'Opponent Agent {i}'] = []
 
     def run(self, dataset, do_eval=True, answer_stage=True):
