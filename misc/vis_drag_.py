@@ -21,7 +21,6 @@ def main(args):
         question_col.extend([d['question']]*3)
         gold_answer_col.extend([json.dumps(d['golden_answers'], indent=4, ensure_ascii=False, sort_keys=True)]*3)
         prompt_col.extend([d['output']['answer_input_prompt']]*3)
-        raw_pred_col.extend([d['output']['raw_pred']]*3)
         pred_col.extend([d['output']['pred']]*3)
         metric_score_col.extend([json.dumps(d['output']['metric_score'], indent=4, ensure_ascii=False, sort_keys=True)]*3)
     
