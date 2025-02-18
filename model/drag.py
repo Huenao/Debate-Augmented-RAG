@@ -15,7 +15,7 @@ class DebateAugmentedRAG(BasicPipeline):
                  agents_num=2,
                  query_proponent_agent=1,
                  query_opponent_agent=1,
-                 answer_proponet_agent=1,
+                 answer_proponent_agent=1,
                  answer_opponent_agent=1,
                  generator=None, retriever=None):
 
@@ -24,7 +24,7 @@ class DebateAugmentedRAG(BasicPipeline):
         self.max_query_debate_rounds = max_query_debate_rounds
         self.max_answer_debate_rounds = max_answer_debate_rounds
         
-        if agents_num != query_proponent_agent + query_opponent_agent & agents_num != answer_proponet_agent + answer_opponent_agent:
+        if agents_num != query_proponent_agent + query_opponent_agent & agents_num != answer_proponent_agent + answer_opponent_agent:
             raise ValueError("The number of agents must be equal to the sum of the proponent and opponent agents")
         if agents_num != 2:
             raise ValueError("The number of agents must be 2")
@@ -40,7 +40,7 @@ class DebateAugmentedRAG(BasicPipeline):
         for i in range(query_opponent_agent):
             self.agents_messages_query_stage[f'Opponent Agent {i}'] = []
             
-        for i in range(answer_proponet_agent):
+        for i in range(answer_proponent_agent):
             self.agents_messages_answer_stage[f'Proponent Agent {i}'] = []
         for i in range(answer_opponent_agent):
             self.agents_messages_answer_stage[f'Opponent Agent {i}'] = []
