@@ -9,8 +9,8 @@ def init_cfg():
     parser = argparse.ArgumentParser("Update configuration from command line arguments.")
 
     parser.add_argument("--method_name", type=str, help="Name of the method",
-                        default="Single Agent",
-                        choices=["DRAG" , "DRAG_wo_asys", "DRAG-", "DRAG-2", "Single Agent", "Standard RAG", "FLARE", "Iter-RetGen", "IRCoT", "Self-Ask", "SuRe", "MAD", "MAD-RAG", "MAD-RAG2", "Self-RAG", "Ret-Robust"])
+                        default="Naive Gen",
+                        choices=["DRAG" , "Naive Gen", "Naive RAG", "FLARE", "Iter-RetGen", "IRCoT", "Self-Ask", "SuRe", "Self-RAG", "Ret-Robust", "MAD", "MAD-RAG"])
     parser.add_argument("--config_path", type=str, help="Path to the config.json file")
     
     # Global Paths
@@ -26,20 +26,26 @@ def init_cfg():
                         default="output/")
     
     # Generator Settings
-    parser.add_argument("--generator_max_input_len", type=int, help="Maximum input length for the generator",
-                        default=4096)
     parser.add_argument("--generator_batch_size", type=int, help="Batch size for the generator",
-                        default=2)
+                        default=5)
 
     # Debate arguments
     parser.add_argument("--agents", type=int, help="Number of agents",
                         default=2)
-    parser.add_argument("--rag_agents", type=int, help="Number of RAG agents",
+    parser.add_argument("--rag_agents", type=int, help="Number of RAG agents for MAD-RAG",
                         default=1)
     parser.add_argument("--max_query_debate_rounds", type=int, help="Number of rounds",
                         default=3)
     parser.add_argument("--max_answer_debate_rounds", type=int, help="Number of rounds",
                         default=3)
+    parser.add_argument("--query_proponent_agent", type=int, help="Number of proponent agents for query stage",
+                        default=1)
+    parser.add_argument("--query_opponent_agent", type=int, help="Number of opponent agents for query stage",
+                        default=1)
+    parser.add_argument("--answer_proponent_agent", type=int, help="Number of proponent agents for answer stage",
+                        default=1)
+    parser.add_argument("--answer_opponent_agent", type=int, help="Number of opponent agents for answer stage",
+                        default=1)
 
     parser.add_argument("--gpu_id", type=str, default="0")
     

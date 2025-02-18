@@ -2,7 +2,7 @@ from .prompt import *
 from .utils import *
 
 
-def single_agent(cfg, test_data):
+def naive_gen(cfg, test_data):
     from flashrag.pipeline import SequentialPipeline
     # preparation
     templete = single_agent_prompt_template[cfg["dataset_name"]](cfg)
@@ -12,7 +12,7 @@ def single_agent(cfg, test_data):
     return result
 
 
-def standard_rag(cfg, test_data):
+def naive_rag(cfg, test_data):
     from flashrag.pipeline import SequentialPipeline
     # preparation
     templete = standard_rag_prompt_template[cfg["dataset_name"]](cfg)
@@ -177,14 +177,6 @@ def mad_rag(cfg, test_data):
     from .mad import MultiAgentDebate
 
     pipeline = MultiAgentDebate(cfg, debate_rounds=3, agents_num=2, use_rag=True)
-    result = pipeline.run(test_data)
-    
-    return result
-
-def mad_rag2(cfg, test_data):
-    from .mad import MultiAgentDebate
-
-    pipeline = MultiAgentDebate(cfg, debate_rounds=3, agents_num=2, use_rag=True, rag_agents_num=2)
     result = pipeline.run(test_data)
     
     return result

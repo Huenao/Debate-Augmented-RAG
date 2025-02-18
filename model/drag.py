@@ -9,7 +9,16 @@ from .utils import *
 
 
 class DebateAugmentedRAG(BasicPipeline):
-    def __init__(self, config, prompt_template=None, max_query_debate_rounds=3, max_answer_debate_rounds=3, agents_num=2, query_proponent_agent=1, query_opponent_agent=1, answer_proponet_agent=1, answer_oppoent_agent=1, generator=None, retriever=None):
+    def __init__(self, config, prompt_template=None, 
+                 max_query_debate_rounds=3,
+                 max_answer_debate_rounds=3,
+                 agents_num=2,
+                 query_proponent_agent=1,
+                 query_opponent_agent=1,
+                 answer_proponet_agent=1,
+                 answer_oppoent_agent=1,
+                 generator=None, retriever=None):
+
         super().__init__(config, prompt_template)
         self.config = config
         self.max_query_debate_rounds = max_query_debate_rounds
@@ -17,6 +26,8 @@ class DebateAugmentedRAG(BasicPipeline):
         
         if agents_num != query_proponent_agent + query_opponent_agent & agents_num != answer_proponet_agent + answer_oppoent_agent:
             raise ValueError("The number of agents must be equal to the sum of the proponent and opponent agents")
+        if agents_num != 2:
+            raise ValueError("The number of agents must be 2")
 
         self.generator = get_generator(config) if generator is None else generator
         self.retriever = get_retriever(config) if retriever is None else retriever
@@ -34,12 +45,12 @@ class DebateAugmentedRAG(BasicPipeline):
         for i in range(answer_oppoent_agent):
             self.agents_messages_answer_stage[f'Opponent Agent {i}'] = []
 
-    def run(self, dataset, do_eval=True, answer_stage=True):
+    def run(self, dataset, do_eval=True):
         for item in tqdm(dataset, desc="Inference: "):
             query_pool = self.query_stage_debate(item)
             item.update_output("QueryStage_QueryPool", query_pool)
             
-            if answer_stage:
+            if self.max_answer_debate_rounds == 0:
                 self.answer_stage_debate(item, query_pool)
             else:
                 message = [
@@ -54,8 +65,11 @@ class DebateAugmentedRAG(BasicPipeline):
         dataset = self.evaluate(dataset, do_eval=do_eval)
     
     def query_stage_debate(self, item):
+        # Initialize the agents' messages
         agents_messages = dict()
+        # Initialize the query pool
         query_pool = dict()
+        
         if self.max_query_debate_rounds == 0:
             input_query = item.question
             retrieval_results = self.retriever.search(input_query)
@@ -240,6 +254,7 @@ Deliver a brief, strong argument with clear reasoning, then you must choose only
         return format_reference
     
     def maintain_query_pool(self, query_pool, opponent_output):
+        # Update the query pool based on the opponent's output
         try:
             if "Query Optimization:" in opponent_output:
                 optimization_instruction = opponent_output.split("Query Optimization:")[1].strip()
@@ -273,6 +288,7 @@ Deliver a brief, strong argument with clear reasoning, then you must choose only
         return query_pool
     
     def format_query_pool(self, query_pool):
+        # Format the query pool
         query_pool_str = ""
         for i, query in enumerate(query_pool):
             query_pool_str += f"Query {i+1}: {query}\nRetrieved Content: {self._format_reference(query_pool[query])}"

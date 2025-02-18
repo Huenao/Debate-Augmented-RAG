@@ -34,8 +34,8 @@ def main(cfg):
     test_data = all_splits["dev"]
     
     func_map = {
-        "Single Agent": single_agent,
-        "Standard RAG": standard_rag,
+        "Naive Gen": naive_gen,
+        "Naive RAG": naive_rag,
         "FLARE": flare,
         "Iter-RetGen": iterretgen,
         "IRCoT": ircot,
@@ -43,13 +43,9 @@ def main(cfg):
         "SuRe": sure,
         "MAD": mad,
         "MAD-RAG": mad_rag,
-        "MAD-RAG2": mad_rag2,
         "Self-RAG": selfrag,
         "Ret-Robust": retrobust,
         "DRAG": drag,
-        "DRAG_wo_asys": drag_wo_asys,
-        "DRAG-": drag_,
-        "DRAG-2": drag_2
     }
     
     func = func_map[cfg["method_name"]]
