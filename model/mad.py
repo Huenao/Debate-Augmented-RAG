@@ -4,19 +4,19 @@ from .utils import *
 
 class MultiAgentDebate(BasicPipeline):
     
-    def __init__(self, config, prompt_template=None, debate_rounds=3, agents_num=2, use_rag=False, rag_agents_num=1, generator=None, retriever=None):
+    def __init__(self, config, prompt_template=None, debate_rounds=3, agents_num=2, rag_agents_num=0, generator=None, retriever=None):
         super().__init__(config, prompt_template)
         self.config = config
         self.debate_rounds = debate_rounds
         self.agents_num = agents_num-rag_agents_num if use_rag else agents_num # If use rag, the number of agents is the number of agents in the debate minus the number of agents in the RAG
 
         self.generator = get_generator(config) if generator is None else generator
-        if use_rag:
+        if rag_agents_num > 0:
             self.retriever = get_retriever(config) if retriever is None else retriever
         
         self.agents_messages = dict()
         # Initialize the agents' messages
-        if use_rag:
+        if rag_agents_num > 0:
             self.rag_agents_num = rag_agents_num
             for i in range(self.rag_agents_num):
                 self.agents_messages[f'RAG Agent {i+1}'] = dict()

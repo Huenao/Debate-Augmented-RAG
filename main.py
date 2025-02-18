@@ -6,25 +6,13 @@ from flashrag.utils import get_dataset
 
 
 def drag(cfg, test_data):
-    pipeline = DebateAugmentedRAG(cfg, max_query_debate_rounds=cfg["max_query_debate_rounds"], max_answer_debate_rounds=cfg["max_answer_debate_rounds"])
-    result = pipeline.run(test_data)
-    
-    return result
-
-def drag_(cfg, test_data):
-    pipeline = DebateAugmentedRAG(cfg, max_query_debate_rounds=cfg["max_query_debate_rounds"], max_answer_debate_rounds=cfg["max_answer_debate_rounds"])
-    result = pipeline.run(test_data, answer_stage=False)
-    
-    return result
-
-def drag_2(cfg, test_data):
-    pipeline = DebateAugmentedRAG(cfg, max_query_debate_rounds=0, max_answer_debate_rounds=cfg["max_answer_debate_rounds"])
-    result = pipeline.run(test_data)
-    
-    return result
-
-def drag_wo_asys(cfg, test_data):
-    pipeline = DebateAugmentedRAG(cfg, max_query_debate_rounds=cfg["max_query_debate_rounds"], max_answer_debate_rounds=cfg["max_answer_debate_rounds"], answer_proponet_agent=2, answer_oppoent_agent=0)
+    pipeline = DebateAugmentedRAG(cfg, 
+                                  max_query_debate_rounds=cfg["max_query_debate_rounds"],
+                                  max_answer_debate_rounds=cfg["max_answer_debate_rounds"],
+                                  query_opponent_agent=cfg["query_opponent_agent"],
+                                  query_proponent_agent=cfg["query_proponent_agent"],
+                                  answer_opponent_agent=cfg["answer_opponent_agent"],
+                                  answer_proponent_agent=cfg["answer_proponent_agent"])
     result = pipeline.run(test_data)
     
     return result
@@ -42,7 +30,6 @@ def main(cfg):
         "Self-Ask": self_ask,
         "SuRe": sure,
         "MAD": mad,
-        "MAD-RAG": mad_rag,
         "Self-RAG": selfrag,
         "Ret-Robust": retrobust,
         "DRAG": drag,

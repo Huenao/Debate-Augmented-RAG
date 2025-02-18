@@ -10,7 +10,7 @@ def init_cfg():
 
     parser.add_argument("--method_name", type=str, help="Name of the method",
                         default="Naive Gen",
-                        choices=["DRAG" , "Naive Gen", "Naive RAG", "FLARE", "Iter-RetGen", "IRCoT", "Self-Ask", "SuRe", "Self-RAG", "Ret-Robust", "MAD", "MAD-RAG"])
+                        choices=["DRAG" , "Naive Gen", "Naive RAG", "FLARE", "Iter-RetGen", "IRCoT", "Self-Ask", "SuRe", "Self-RAG", "Ret-Robust", "MAD"])
     parser.add_argument("--config_path", type=str, help="Path to the config.json file")
     
     # Global Paths
@@ -33,7 +33,7 @@ def init_cfg():
     parser.add_argument("--agents", type=int, help="Number of agents",
                         default=2)
     parser.add_argument("--rag_agents", type=int, help="Number of RAG agents for MAD-RAG",
-                        default=1)
+                        default=0)
     parser.add_argument("--max_query_debate_rounds", type=int, help="Number of rounds",
                         default=3)
     parser.add_argument("--max_answer_debate_rounds", type=int, help="Number of rounds",

@@ -167,16 +167,7 @@ def retrobust(cfg, test_data):
 def mad(cfg, test_data):
     from .mad import MultiAgentDebate
 
-    pipeline = MultiAgentDebate(cfg, debate_rounds=3, agents_num=2)
-    result = pipeline.run(test_data)
-    
-    return result
-
-
-def mad_rag(cfg, test_data):
-    from .mad import MultiAgentDebate
-
-    pipeline = MultiAgentDebate(cfg, debate_rounds=3, agents_num=2, use_rag=True)
+    pipeline = MultiAgentDebate(cfg, debate_rounds=cfg["max_answer_debate_rounds"], agents_num=cfg["agents"], rag_agents_num=cfg["rag_agents"])
     result = pipeline.run(test_data)
     
     return result
