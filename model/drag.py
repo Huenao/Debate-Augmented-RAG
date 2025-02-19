@@ -50,9 +50,10 @@ class DebateAugmentedRAG(BasicPipeline):
             query_pool = self.query_stage_debate(item)
             item.update_output("QueryStage_QueryPool", query_pool)
             
-            if self.max_answer_debate_rounds == 0:
+            # If answer debate rounds is greater than 0, then answer the question with answer debate
+            if self.max_answer_debate_rounds > 0:
                 self.answer_stage_debate(item, query_pool)
-            else:
+            else: # If answer debate rounds is 0, then only answer the question, no debate
                 message = [
                     self._answer_only_message(query_pool),
                     {"role": "user", "content": f"Question: {item.question}\n"}
