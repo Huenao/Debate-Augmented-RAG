@@ -66,7 +66,7 @@ rerank_batch_size: 256 # batch size for reranker
 rerank_use_fp16: True
 
 # -------------------------------------------------Generator Settings------------------------------------------------#
-framework: hf # inference frame work of LLM, supporting: 'hf','vllm','fschat'
+framework: vllm # inference frame work of LLM, supporting: 'hf','vllm','fschat'
 generator_model: "llama3-8B-instruct" # name or path of the generator model
 generator_max_input_len: 4096  # max length of the input
 generator_batch_size: 2 # batch size for generation, invalid for vllm

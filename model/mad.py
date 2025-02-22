@@ -8,7 +8,7 @@ class MultiAgentDebate(BasicPipeline):
         super().__init__(config, prompt_template)
         self.config = config
         self.debate_rounds = debate_rounds
-        self.agents_num = agents_num-rag_agents_num if use_rag else agents_num # If use rag, the number of agents is the number of agents in the debate minus the number of agents in the RAG
+        self.agents_num = agents_num-rag_agents_num # If use rag, the number of agents is the number of agents in the debate minus the number of agents in the RAG
 
         self.generator = get_generator(config) if generator is None else generator
         if rag_agents_num > 0:
