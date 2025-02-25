@@ -4,6 +4,8 @@ model2path:
   e5: "/data/share/retriever_model/e5-base-v2"
   llama3-8B-instruct: "/data/share/llama_checkpoints/Llama-3.1-8B-Instruct"
   llama2-7B: "/data/share/llama_checkpoints/Llama-2-7b-hf"
+  qwen2.5-7B: "/data/share/Qwen/Qwen2.5-7B-Instruct-1M"
+  vicuna-13b-v1.5: "~/hwt/models/vicuna-13b-v1.5"
 
 # Pooling methods for each embedding model
 model2pooling:
