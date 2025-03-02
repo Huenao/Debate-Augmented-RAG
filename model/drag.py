@@ -109,7 +109,7 @@ class DebateAugmentedRAG(BasicPipeline):
                 opponent_output = agents_messages["Opponent Agent 0"][1]
                 # Update the query pool
                 query_pool_tmp = self.maintain_query_pool(query_pool, opponent_output)
-                if query_pool is None:
+                if query_pool_tmp is None:
                     return query_pool
                 else:
                     query_pool = query_pool_tmp
