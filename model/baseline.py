@@ -1,3 +1,5 @@
+# Copy from https://github.com/RUC-NLPIR/FlashRAG/blob/main/examples/methods/run_exp.py
+
 from .prompt import *
 from .utils import *
 
