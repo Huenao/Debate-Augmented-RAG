@@ -10,7 +10,7 @@ def init_cfg():
 
     parser.add_argument("--method_name", type=str, help="Name of the method",
                         default="Naive Gen",
-                        choices=["DRAG" , "Naive Gen", "Naive RAG", "FLARE", "Iter-RetGen", "IRCoT", "Self-Ask", "SuRe", "Self-RAG", "Ret-Robust", "MAD"])
+                        choices=["DRAG" , "Naive Gen", "Naive RAG", "FLARE", "Iter-RetGen", "IRCoT", "SuRe", "Self-RAG", "MAD"])
     parser.add_argument("--config_path", type=str, help="Path to the config.json file")
     
     # Global Paths
