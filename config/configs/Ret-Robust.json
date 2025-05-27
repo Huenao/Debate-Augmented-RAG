@@ -1,0 +1,6 @@
+{
+    "model2path": {
+        "llama2-13B": "/data/share/llama_checkpoints/Llama-2-13b-hf"
+    },
+    "generator_model": "llama2-13B"
+}
